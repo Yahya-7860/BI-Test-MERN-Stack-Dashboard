@@ -1,6 +1,6 @@
 import React from 'react';
 
-const GroupModal = ({ groupName, setGroupName, onClose, onCreate }) => {
+const GroupFormModal = ({ groupName, setGroupName, onClose, onCreate }) => {
     return (
         <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-10">
             <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm">
@@ -33,4 +33,4 @@ const GroupModal = ({ groupName, setGroupName, onClose, onCreate }) => {
     );
 };
 
-export default GroupModal;
+export default GroupFormModal;

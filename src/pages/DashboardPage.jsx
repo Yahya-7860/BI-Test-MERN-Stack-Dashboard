@@ -1,10 +1,33 @@
-import React, { useState } from 'react';
-import GroupModal from '../modal/GroupForm';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from "react-toastify"
+import GroupFormModal from '../modal/GroupForm';
+import GroupCard from '../components/GroupCard';
+import GroupDetailsModal from '../modal/GroupInsideModal';
 
 const Dashboard = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isGroupFormModalOpen, setIsGroupFormModalOpen] = useState(false);
+    const [isGroupCardOpen, setIsGroupCardModalOpen] = useState(false);
     const [groupName, setGroupName] = useState('');
+    const [allGroups, setAllGroups] = useState([]);
+
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                await fetch('http://localhost:8000/groups', {
+                    method: "GET",
+                }).then((res) => res.json())
+                    .then((data) => {
+                        console.log(data)
+                        setAllGroups(data.groups);
+                    })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchGroups();
+    }, [groupName]);
+
+
 
     const handleCreateGroup = async () => {
         const option = {
@@ -21,7 +44,7 @@ const Dashboard = () => {
                     console.log(data);
                     toast.success("Group Created");
                     setGroupName(' ');
-                    setIsModalOpen(false);
+                    setIsGroupFormModalOpen(false);
                 })
         } catch (error) {
             toast.error("Error in creating group")
@@ -34,20 +57,37 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold mb-8 ">Expense Sharing App</h1>
 
             <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => setIsGroupFormModalOpen(true)}
                 className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
             >
                 Create Group
             </button>
 
-            {isModalOpen && (
-                <GroupModal
+            {isGroupFormModalOpen && (
+                <GroupFormModal
                     groupName={groupName}
                     setGroupName={setGroupName}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => setIsGroupFormModalOpen(false)}
                     onCreate={handleCreateGroup}
                 />
             )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
+                {
+                    allGroups.length > 0 ? (
+                        allGroups.map((item, index) => {
+                            return (
+                                <GroupCard key={index} setIsGroupCardModalOpen={setIsGroupCardModalOpen} groupName={item.name} />
+                            )
+                        })
+                    ) : <p>No Groups yet</p>
+                }
+            </div>
+
+            {
+                isGroupCardOpen && (
+                    <GroupDetailsModal />
+                )
+            }
 
             <ToastContainer position='bottom-left' />
         </div>
