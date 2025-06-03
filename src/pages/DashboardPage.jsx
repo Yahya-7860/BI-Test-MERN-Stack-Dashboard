@@ -1,15 +1,32 @@
 import React, { useState } from 'react';
 import GroupModal from '../modal/GroupForm';
+import { ToastContainer, toast } from "react-toastify"
 
 const Dashboard = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [groupName, setGroupName] = useState('');
 
-    const handleCreateGroup = () => {
-        // Placeholder for group creation logic
-        console.log('Group Created:', groupName);
-        setGroupName('');
-        setIsModalOpen(false);
+    const handleCreateGroup = async () => {
+        const option = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: groupName })
+        }
+        try {
+            await fetch("http://localhost:8000/group/create", option)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data);
+                    toast.success("Group Created");
+                    setGroupName(' ');
+                    setIsModalOpen(false);
+                })
+        } catch (error) {
+            toast.error("Error in creating group")
+            console.log(error)
+        }
     };
 
     return (
@@ -31,6 +48,8 @@ const Dashboard = () => {
                     onCreate={handleCreateGroup}
                 />
             )}
+
+            <ToastContainer position='bottom-left' />
         </div>
     )
 };

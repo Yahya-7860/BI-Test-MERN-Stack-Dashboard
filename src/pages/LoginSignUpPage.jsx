@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function AuthPage() {
     const [formData, setFormData] = useState({
@@ -8,7 +9,6 @@ export default function AuthPage() {
         phone: '',
         password: ''
     });
-    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({
@@ -30,6 +30,7 @@ export default function AuthPage() {
             await fetch("http://localhost:8000/register", options)
                 .then((res) => res.json())
                 .then((data) => {
+                    toast.success("Registerd, Now Login");
                     console.log(data)
                     setFormData({
                         name: '',
@@ -37,8 +38,6 @@ export default function AuthPage() {
                         phone: '',
                         password: ''
                     })
-                    navigate('/dashboard')
-                    console.log('user created')
                 })
         } catch (error) {
             console.log(error)
@@ -112,6 +111,7 @@ export default function AuthPage() {
                     Login with Google
                 </button>
             </div>
+            <ToastContainer position='bottom-left' />
         </div>
     );
 }
