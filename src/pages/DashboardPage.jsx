@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast } from "react-toastify"
 import GroupFormModal from '../modal/GroupForm';
 import GroupCard from '../components/GroupCard';
-import GroupDetailsModal from '../modal/GroupInsideModal';
-
+import { Outlet } from 'react-router-dom';
 const Dashboard = () => {
     const [isGroupFormModalOpen, setIsGroupFormModalOpen] = useState(false);
-    const [isGroupCardOpen, setIsGroupCardModalOpen] = useState(false);
+    const [isGroupCardModalOpen, setIsGroupCardModalOpen] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [allGroups, setAllGroups] = useState([]);
 
@@ -76,18 +75,13 @@ const Dashboard = () => {
                     allGroups.length > 0 ? (
                         allGroups.map((item, index) => {
                             return (
-                                <GroupCard key={index} setIsGroupCardModalOpen={setIsGroupCardModalOpen} groupName={item.name} />
+                                <GroupCard key={index} setIsGroupCardModalOpen={setIsGroupCardModalOpen} groupName={item.name} group_id={item._id} />
                             )
                         })
                     ) : <p>No Groups yet</p>
                 }
             </div>
-
-            {
-                isGroupCardOpen && (
-                    <GroupDetailsModal />
-                )
-            }
+            <Outlet />
 
             <ToastContainer position='bottom-left' />
         </div>
