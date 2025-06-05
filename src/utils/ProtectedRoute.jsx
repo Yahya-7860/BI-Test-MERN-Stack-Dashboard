@@ -7,7 +7,11 @@ const ProtectedRoute = ({ children }) => {
 
     useEffect(() => {
         axios.get("http://localhost:8000/auth/user", { withCredentials: true })
-            .then(res => setAuth(true))
+            .then(res => {
+                setAuth(true)
+                localStorage.setItem('authUserName', res.data.user.name)
+                localStorage.setItem('authUserEmail', res.data.user.email)
+            })
             .catch(err => setAuth(false));
     }, []);
 

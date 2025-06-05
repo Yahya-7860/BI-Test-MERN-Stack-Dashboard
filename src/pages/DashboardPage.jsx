@@ -16,7 +16,7 @@ const Dashboard = () => {
                     method: "GET",
                 }).then((res) => res.json())
                     .then((data) => {
-                        console.log(data)
+                        // console.log(data)
                         setAllGroups(data.groups);
                     })
             } catch (error) {

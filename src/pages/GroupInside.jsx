@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AddMemberModal from '../modal/AddMemberModal';
+import MemberCard from '../components/MemberCard';
 
 const GroupInside = () => {
 
@@ -9,9 +10,6 @@ const GroupInside = () => {
     const [groupName, setGroupName] = useState('');
     const [loading, setLoading] = useState(false);
     const [addMemModalOpen, setAddMemModalOpen] = useState(false);
-
-
-
 
     useEffect(() => {
         setLoading(true);
@@ -42,8 +40,9 @@ const GroupInside = () => {
                 <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer active:bg-blue-900" onClick={() => setAddMemModalOpen(true)}>
                     Add Member
                 </button>
+                <MemberCard />
             </div>
-            {addMemModalOpen && <AddMemberModal setAddMemModalOpen={setAddMemModalOpen} />}
+            {addMemModalOpen && <AddMemberModal setAddMemModalOpen={setAddMemModalOpen} group_id={group_id} groupName={groupName} />}
         </div>
     );
 };

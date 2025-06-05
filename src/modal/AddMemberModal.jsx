@@ -1,20 +1,37 @@
 import { useState } from 'react';
 
-function AddMemberModal({ setAddMemModalOpen }) {
+function AddMemberModal({ setAddMemModalOpen, group_id, groupName }) {
     const [formData, setFormData] = useState({
-        name: '',
+        memberName: '',
         email: ''
     });
 
+    const AuthUserEmail = localStorage.getItem('authUserEmail');
+    const AuthUserName = localStorage.getItem('authUserName');
 
-    const handleAddMember = (e) => {
+    const handleAddMember = async (e) => {
         e.preventDefault();
-        // Reset
-        setFormData({
-            name: '',
-            email: ''
-        })
-        setAddMemModalOpen();
+        const option = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...formData, AuthUserEmail, AuthUserName, groupName })
+        }
+        try {
+            await fetch(`http://localhost:8000/group/member/${group_id}`, option)
+                .then((res) => res.json())
+                .then((data) => {
+                    console.log(data)
+                    setFormData({
+                        memberName: '',
+                        email: ''
+                    })
+                    setAddMemModalOpen(false);
+                })
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     return (
@@ -34,8 +51,8 @@ function AddMemberModal({ setAddMemModalOpen }) {
                         <label className="block mb-1 text-sm font-medium text-gray-700">Name</label>
                         <input
                             type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData((pre) => ({ ...pre, name: e.target.value }))}
+                            value={formData.memberName}
+                            onChange={(e) => setFormData((pre) => ({ ...pre, memberName: e.target.value }))}
                             required
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
