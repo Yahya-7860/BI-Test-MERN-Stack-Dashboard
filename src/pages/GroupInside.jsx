@@ -10,10 +10,33 @@ const GroupInside = () => {
     const [groupName, setGroupName] = useState('');
     const [loading, setLoading] = useState(false);
     const [addMemModalOpen, setAddMemModalOpen] = useState(false);
+    const [members, setMembers] = useState([]);
 
     useEffect(() => {
         setLoading(true);
-        const fetchGroups = async () => {
+        const fetchMembers = async () => {
+            try {
+                await fetch(`http://localhost:8000/group/members/${group_id}`, {
+                    method: "GET",
+                }).then((res) => res.json())
+                    .then((data) => {
+                        setLoading(false);
+                        setMembers(data.members);
+                        console.log(data.members)
+                    })
+            } catch (error) {
+                setLoading(false);
+                console.log(error)
+            }
+        }
+        fetchMembers();
+    }, []);
+
+
+
+    useEffect(() => {
+        setLoading(true);
+        const fetchMembers = async () => {
             try {
                 await fetch(`http://localhost:8000/group/${group_id}`, {
                     method: "GET",
@@ -27,7 +50,7 @@ const GroupInside = () => {
                 console.log(error)
             }
         }
-        fetchGroups();
+        fetchMembers();
     }, [group_id]);
     return (
         <div className="fixed inset-0 bg-gray-300 bg-opacity-40 flex justify-center items-center z-50">
@@ -37,10 +60,15 @@ const GroupInside = () => {
                     <button className="text-black text-4xl font-semibold cursor-pointer hover:text-red-500" onClick={() => navigate('/dashboard')}>&times;</button>
                 </div>
                 {loading && <h3>Loding...</h3>}
-                <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer active:bg-blue-900" onClick={() => setAddMemModalOpen(true)}>
+                <button className=" bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 cursor-pointer active:bg-blue-900 text-xs font-medium" onClick={() => setAddMemModalOpen(true)}>
                     Add Member
                 </button>
-                <MemberCard />
+                {
+                    members.length > 0 ? members.map((item, index) => {
+                        return (<MemberCard memberName={item.memberName} />)
+                    }) : <p className='h-full w-full flex items-center justify-center'>No Members yet</p>
+                }
+
             </div>
             {addMemModalOpen && <AddMemberModal setAddMemModalOpen={setAddMemModalOpen} group_id={group_id} groupName={groupName} />}
         </div>
