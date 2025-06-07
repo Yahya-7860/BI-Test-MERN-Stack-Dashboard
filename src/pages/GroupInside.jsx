@@ -22,7 +22,7 @@ const GroupInside = () => {
                     .then((data) => {
                         setLoading(false);
                         setMembers(data.members);
-                        console.log(data.members)
+                        // console.log(data.members)
                     })
             } catch (error) {
                 setLoading(false);
@@ -65,7 +65,7 @@ const GroupInside = () => {
                 </button>
                 {
                     members.length > 0 ? members.map((item, index) => {
-                        return (<MemberCard memberName={item.memberName} />)
+                        return (<MemberCard key={index} totalMember={members.length} memberName={item.memberName} group_id={group_id} member_id={item._id} owe={item.owe} lent={item.lent} />)
                     }) : <p className='h-full w-full flex items-center justify-center'>No Members yet</p>
                 }
 
