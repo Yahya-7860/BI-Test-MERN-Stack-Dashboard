@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 
-function AddMemberModal({ setAddMemModalOpen, group_id, groupName }) {
+function AddMemberModal({ setAddMemModalOpen, group_id, groupName, setRefresh }) {
     const [formData, setFormData] = useState({
         memberName: '',
         email: ''
@@ -19,16 +20,20 @@ function AddMemberModal({ setAddMemModalOpen, group_id, groupName }) {
             body: JSON.stringify({ ...formData, AuthUserEmail, AuthUserName, groupName })
         }
         try {
-            await fetch(`http://localhost:8000/group/member/${group_id}`, option)
-                .then((res) => res.json())
-                .then((data) => {
-                    console.log(data)
-                    setFormData({
-                        memberName: '',
-                        email: ''
-                    })
-                    setAddMemModalOpen(false);
+            const res = await fetch(`http://localhost:8000/group/member/${group_id}`, option)
+            const data = await res.json();
+            if (res.status === 400) {
+                toast.error("Member/Email already added.")
+
+            } else {
+                setFormData({
+                    memberName: '',
+                    email: ''
                 })
+                setAddMemModalOpen(false);
+                setRefresh(prev => !prev)
+            }
+
         } catch (error) {
             console.log(error)
         }
@@ -77,6 +82,7 @@ function AddMemberModal({ setAddMemModalOpen, group_id, groupName }) {
                     </button>
                 </form>
             </div>
+            <ToastContainer position='bottom-left' />
         </div>
     );
 }
